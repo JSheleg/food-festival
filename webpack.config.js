@@ -11,10 +11,39 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 //mode: what state you would like to run the webpack in. 
 //Default is production-here webpack will minify our code for us automatically  along with some other nice additions
 module.exports = {
-    entry: './assets/js/script.js',
+    entry: {
+        app:'./assets/js/script.js',
+        events: './assets/js/events.js',
+        schedule: './assets/js/schedule.js',
+        tickets: './assets/js/tickets.js'
+    },
     output: {
-        path: path.resolve(__dirname + 'dist'),
-        filename: 'main.bundle.js'
+        filename: '[name].bundle.js',
+        path: __dirname + "/dist",
+    },
+    module: {
+        rules: [
+            {
+                test: /\.jpg$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            esModule: false,
+                            name (file) {
+                                return "[path][name].[ext]"
+                            },
+                            publicPath: function(url){
+                                return url.replace("../", "/assets/")
+                            }
+                        }
+                    },
+                    {
+                        loader: "image-webpack-loader"
+                    }
+                ]
+            }
+        ]
     },
     //directs webpack in what to do
     //providePlugin to define $ and jQuery
